@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "SIV",
+  "version": "0.1.0",
+  "identifier": "com.steez.siv",
+  "build": {
+    "frontendDist": "../ui",
+    "beforeDevCommand": "node scripts/sync-steez.mjs",
+    "beforeBuildCommand": "node scripts/sync-steez.mjs"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "SIV",
+        "width": 1180,
+        "height": 760,
+        "minWidth": 520,
+        "minHeight": 320,
+        "decorations": false,
+        "transparent": false,
+        "backgroundColor": "#000000",
+        "center": true,
+        "dragDropEnabled": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico",
+      "icons/icon.png"
+    ],
+    "windows": {
+      "nsis": {
+        "installerHooks": "./windows/hooks.nsh",
+        "installMode": "currentUser"
+      }
+    },
+    "publisher": "Steez-47",
+    "copyright": "Copyright © 2026 Steez-47",
+    "category": "Photography",
+    "shortDescription": "Steez Image Viewer",
+    "longDescription": "Steez Image Viewer: a fast, lightweight image viewer with crop, adjustments, filters, Photoshop-style zoom and side-by-side compare.",
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQwMEI5MTE0OUVEQzA4NzkKUldSNUNOeWVGSkVMMENoZXZDUWFDREx0cVA2UG5NVDB2OTQzSTNrd3VyMkdQbHdQanlESzB3V2QK",
+      "endpoints": [
+        "https://github.com/Steez-47/siv/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  }
+}
