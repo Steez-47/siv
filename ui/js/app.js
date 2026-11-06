@@ -18,7 +18,7 @@ import { $, esc, base, dirname, bytes, mp, pct, formatName, extOf, clamp } from 
 
 const body = document.body;
 const viewer = new Viewer($("view"), $("surface"), {
-  leftDrag: (e) => settings.dragPan && !app.crop?.active && $("view").classList.contains("can-pan"),
+  leftDrag: () => settings.dragPan && !app.crop?.active,
   onDblClick: (e, px, py) => { if (app.crop?.active) return; settings.dblClick === "fullscreen" ? toggleFull() : viewer.toggle(px, py); },
   onNavigate: (d) => go(folder.idx + d),
 });

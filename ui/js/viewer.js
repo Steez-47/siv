@@ -2,13 +2,14 @@
 // translate + scale inside a viewport. z = device pixels per image pixel, so 100% means 1:1 on screen.
 //
 // Mouse:   wheel zooms at the cursor (or navigates, per setting) · Ctrl+wheel / pinch always zooms
-//          left-drag pans when the image is bigger than the window · middle-drag always pans
+//          left-drag pans (artboard: the image can be moved anywhere, even past the window edges) · middle-drag pans too
 // Keys (Photoshop): hold Space = hand · Ctrl+Space = zoom in (click) / scrubby zoom (drag left-right)
 //          Alt+Space = zoom out (click)
 import { settings } from "./settings.js";
 import { clamp } from "./util.js";
 
 export const MIN_Z = 0.02, MAX_Z = 64;
+const KEEP = 64;                       // CSS px of image that always stays inside the window when panning
 const dpr = () => window.devicePixelRatio || 1;
 
 /** Global modifier state shared by every viewer (Space is held at the window level). */
@@ -121,11 +122,11 @@ export class Viewer extends EventTarget {
   }
 
   // ---------------------------------------------------------------- zoom + pan
-  /** Keep the image on screen: centered on an axis where it fits, edges pinned to the box where it doesn't. */
+  /** Artboard: the image moves freely around (and past) the window, only a sliver must stay visible so it can't get lost. */
   clampPan() {
-    const b = this.box(), sw = this.sw, sh = this.sh;
-    this.x = sw <= b.width ? b.left + (b.width - sw) / 2 : clamp(this.x, b.left + b.width - sw, b.left);
-    this.y = sh <= b.height ? b.top + (b.height - sh) / 2 : clamp(this.y, b.top + b.height - sh, b.top);
+    const b = this.box(), mx = Math.min(this.sw, KEEP), my = Math.min(this.sh, KEEP);
+    this.x = clamp(this.x, b.left + mx - this.sw, b.left + b.width - mx);
+    this.y = clamp(this.y, b.top + my - this.sh, b.top + b.height - my);
   }
   /** Zoom to z keeping the content point under viewport point (px, py) fixed. */
   zoomTo(z, px, py, { animate = false, mode = "manual" } = {}) {
@@ -137,6 +138,8 @@ export class Viewer extends EventTarget {
     const u = (px - from.x) / (this.w * from.z / dpr()), v = (py - from.y) / (this.h * from.z / dpr());
     const s = z / dpr();
     const t = { z, x: px - u * this.w * s, y: py - v * this.h * s };
+    // fit / fill always land centered, wherever the image was dragged to
+    if (mode !== "manual") { t.x = b.left + (b.width - this.w * s) / 2; t.y = b.top + (b.height - this.h * s) / 2; }
     this.fitMode = mode;
     const save = { z: this.z, x: this.x, y: this.y };
     Object.assign(this, t); this.clampPan(); t.x = this.x; t.y = this.y; Object.assign(this, save);
@@ -187,7 +190,7 @@ export class Viewer extends EventTarget {
     st.transform = `translate(${this.x}px, ${this.y}px) scale(${s})`;
     this.surf.classList.toggle("pixel", settings.pixelated && this.z >= 2);
     const b = this.box();
-    this.vp.classList.toggle("can-pan", this.sw > b.width + 1 || this.sh > b.height + 1);
+    this.vp.classList.toggle("can-pan", !!this.w && !!this.leftDrag({}));
     if (silent) return;
     for (const f of this.followers) f.follow(this);
     this.dispatchEvent(new Event("change"));

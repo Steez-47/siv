@@ -19,9 +19,9 @@ const SECTIONS = {
     ["smoothZoom", "switch", "Animated zoom"],
     ["pixelated", "switch", "Sharp pixels when zoomed in", "Shows real pixels above 200% instead of smoothing them"],
     ["h", "Mouse"],
-    ["dragPan", "switch", "Drag to pan", "Left-drag moves the image when it's bigger than the window"],
+    ["dragPan", "switch", "Drag to pan", "Left-drag moves the image around, like an artboard"],
     ["dblClick", sel([["zoom", "Toggle fit / 100%"], ["fullscreen", "Fullscreen"]]), "Double-click image"],
-    ["note", "Photoshop controls work everywhere: hold Space and drag to pan. Ctrl+Space and click to zoom in, or drag left and right to zoom smoothly. Alt+Space and click to zoom out. Middle-drag always pans, and the mouse's back / forward buttons switch images."],
+    ["note", "Photoshop controls work everywhere: hold Space and drag to pan. Ctrl+Space and click to zoom in, or drag left and right to zoom smoothly. Alt+Space and click to zoom out. Middle-drag pans too, and the mouse's back / forward buttons switch images."],
   ],
   folder: [
     ["h", "Browsing"],
