@@ -1,7 +1,7 @@
 {
   "name": "siv",
   "productName": "SIV",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Steez Image Viewer",
   "private": true,
   "scripts": {
